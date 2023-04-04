@@ -6,10 +6,10 @@ import { BookDTO } from "./book.dto";
 export class BookService {
   constructor(private prisma: PrismaService) {}
 
-  async create(book: BookDTO) {
-    const bookExists = await this.prisma.book.findUnique({
+  async create(data: BookDTO) {
+    const bookExists = await this.prisma.book.findFirst({
       where: {
-        barCode: book.barCode,
+        barCode: data.barCode,
       },
     });
 
@@ -17,8 +17,8 @@ export class BookService {
       throw new Error("Book already exists");
     }
 
-    this.prisma.book.create({
-      data: book,
+    const book = await this.prisma.book.create({
+      data,
     });
 
     return book;
